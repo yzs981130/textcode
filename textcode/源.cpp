@@ -1,87 +1,41 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <cstdio>
-#include <iostream>
-#include <cstring>
-#include <string>
-#include <exception>
-using namespace std;
-class CArray
-{
-    size_t size;
-    int *ptr;
-public:
-    CArray(int s = 0) {}
-    CArray(const CArray &a);
-    ~CArray();
-    void push_back(int v);
-    int length() { return size; }
-    int &operator [](int i)
-    {
-        if (i > size || i < 0)
-            throw runtime_error("out of range!");
-        else
-            return ptr[i];
+#include <stdio.h> 
+#include <time.h> 
+#include <string.h> 
+#include <stdlib.h> 
+#define PRIME_LIM 10000000 
+#define N 100000000 
+int primes[PRIME_LIM] = {0}; 
+int flags[N/96 + 1] = {0}; 
+int get_prime() 
+{ 
+    int nu = 5, to = 0; 
+    primes[0] = 2; 
+    primes[1] = 2, primes[2] = 3; 
+    for(int i = 0; nu <= N; i++) 
+    { 
+        if(!(flags[i>>5]&(1<<(i&31)))) 
+            primes[++primes[0]] = nu; 
+        for(int j = 3; j <= primes[0] && primes[j] * nu <= N; j++) 
+        { 
+            to = (nu * primes[j] - 5) >> 1; 
+            to -= to/3; 
+            flags[to>>5] |= 1<<(to&31); 
+            if(!(nu % primes[j])) 
+                break; 
+        } 
+        nu += 2 + ((i&1) << 1); 
+    } 
+    return primes[0]; 
+} 
+int main() 
+{ 
+    clock_t t = clock(); 
+    printf("%d\n", get_prime()); 
+    printf("Time:%f\n", 1.0 * (clock() - t) / CLOCKS_PER_SEC); 
+    for(int i = 1; primes[i] < 100; i++) 
+    { 
+        printf("%d\n", primes[i]); 
     }
-    CArray &operator = (const CArray & a);
-};
-int main()
-{
-    
     system("pause");
-    return 0;
-}
-
-CArray::CArray(const CArray & a)
-{
-    if (!a.ptr)
-    {
-        ptr = nullptr;
-        size = 0;
-        return;
-    }
-    ptr = new int[a.size];
-    memcpy(ptr, a.ptr, sizeof(int) * a.size);
-    size = a.size;
-}
-
-CArray::~CArray()
-{
-    if (ptr)
-        delete ptr;
-}
-
-void CArray::push_back(int v)
-{
-    if (ptr)
-    {
-        int *tmpptr = new int[size + 1];
-        memcpy(tmpptr, ptr, sizeof(int) * size);
-        delete[]ptr;
-        ptr = tmpptr;
-    }
-    else
-        ptr = new int[1];
-    ptr[size++] = v;
-}
-
-CArray & CArray::operator=(const CArray & a)
-{
-    if (ptr == a.ptr)
-        return *this;
-    if (a.ptr == nullptr)
-    {
-        if (ptr)
-            delete ptr;
-        ptr = nullptr;
-        size = 0;
-        return *this;
-    }
-    if (size < a.size)
-    {
-        if (ptr)
-            delete[]ptr;
-        ptr = new int[a.size];
-    }
-    memcpy(ptr, a.ptr, sizeof(int) * a.size);
-    size = a.size;
+    return 0; 
 }
