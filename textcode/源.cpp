@@ -1,54 +1,37 @@
 #include <iostream>
 #include <cstring>
 #include <string>
-#include <algorithm>
 using namespace std;
-bool is_all_odd(string n)
-{
-    for (int i = 0; i < n.length(); i++)
-        if ((n[i] - '0') % 2 == 0)
-            return false;
-    return true;
-}
 int main()
 {
-    string n;
-    cin >> n;
-    if (is_all_odd(n))
-        cout << "-1" << endl;
-    else
+    int zero, one;
+    cin >> zero >> one;
+    if (one < zero - 1 || one > 2 * (zero + 1))
+        cout << "-1";
+    else if (one == zero || zero == one + 1)
     {
-        bool flag = false;
-        int pos = string::npos;
-        int len = n.size();
-        int n_l = n[len - 1] - '0';
-        for (int i = 0; i < n.length(); i++)
-        {
-            int t = n[i] - '0';
-            if (t % 2 == 0)
-            {
-                if (n_l > t)
-                {
-                    char tmp = n[len - 1];
-                    n[len - 1] = n[i];
-                    n[i] = tmp;
-                    flag = true;
-                    pos = i;
-                    break;
-                }
-                else
-                    pos = i;
-            }
-        }
-        cout << flag << ' ' << pos << endl;
-        if (!flag && pos != string::npos)
-        {
-            char tmp = n[len - 1];
-            n[len - 1] = n[pos];
-            n[pos] = tmp;
-        }
-        cout << n << endl;
+        for (int i = 0; i < zero - 1; i++)
+            cout << "01";
+        if (one == zero)
+            cout << "01";
+        else
+            cout << "0";
     }
+    else if (zero < one && one <= zero * 2)
+    {
+        for (int i = 0; i < one - zero; i++)
+            cout << "110";
+        for (int i = 0; i < 2 * zero - one; i++)
+            cout << "10";
+    }
+    else if (zero * 2 < one && one <= 2 * (zero + 1))
+    {
+        for (int i = 0; i < zero; i++)
+            cout << "110";
+        for (int i = 0; i < one - 2 * zero; i++)
+            cout << "1";
+    }
+    cout << endl;
     system("pause");
     return 0;
 }
